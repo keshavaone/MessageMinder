@@ -30,7 +30,18 @@ def internet_connected():
     return False
 
 
-def whatsapp_communicate(numbers, messages):
+def check_whatsapp_logged_in(driver):
+    try:
+        wait = WebDriverWait(driver, 100)
+        wait.until(EC.visibility_of_element_located((By.XPATH, search_button))).click()
+        driver.find_element(By.XPATH, chat_list).is_displayed()
+        logged_in = True
+    except selenium_exception.TimeoutException:
+        logged_in = False
+    return logged_in
+
+
+def whatsapp_communicate(numbers, names, messages):
 
     intrnt_connected = False
     success_numbers = []
@@ -46,24 +57,33 @@ def whatsapp_communicate(numbers, messages):
         intrnt_connected = True
         driver.get('https://web.whatsapp.com')
         driver.implicitly_wait(10)
-        try:
-            wait = WebDriverWait(driver, 100)
-            wait.until(EC.visibility_of_element_located((By.XPATH, search_button))).click()
-            driver.find_element(By.XPATH, chat_list).is_displayed()
-            logged_in = True
-        except selenium_exception.TimeoutException:
-            logged_in = False
+        logged_in = check_whatsapp_logged_in(driver)
         if logged_in:
             driver.find_element(By.XPATH, search_button).click()
             for i in range(len(numbers)):
                 if internet_connected():
                     driver.find_element(By.XPATH, search_bar).send_keys(numbers[i]+Keys.ENTER)
                     time.sleep(1)
-                    driver.find_element(By.XPATH, message_bar).send_keys((messages[i]))
-                    driver.find_element(By.XPATH, message_bar).send_keys(Keys.ENTER)
-                    print(i+1, 'Message Sent to', numbers[i])
-                    success_numbers.append((i, numbers[i], messages[i]))
-                    time.sleep(2)
+                    try:
+                        driver.find_element(By.XPATH, message_bar).send_keys((messages[i]))
+                        driver.find_element(By.XPATH, message_bar).send_keys(Keys.ENTER)
+                        print(i+1, 'Message Sent to', numbers[i])
+                        success_numbers.append((i, numbers[i], messages[i]))
+                        time.sleep(2)
+                    except selenium_exception.NoSuchElementException:
+                        try:
+                            driver.find_element(By.XPATH, search_bar).clear()
+                            driver.find_element(By.XPATH, search_bar).send_keys(names[i] + Keys.ENTER)
+                            time.sleep(1)
+                            driver.find_element(By.XPATH, message_bar).send_keys((messages[i]))
+                            driver.find_element(By.XPATH, message_bar).send_keys(Keys.ENTER)
+                            print(i + 1, 'Message Sent to', numbers[i])
+                            success_numbers.append((i, numbers[i], messages[i]))
+                            time.sleep(2)
+                        except selenium_exception.NoSuchElementException:
+                            failed_numbers.append((i, numbers[i], messages[i]))
+                            print('Message Not Sent. Contact:', numbers[i], 'Not Found.')
+                        
                 else:
                     failed_numbers.append((i, numbers[i], messages[i]))
             driver.close()

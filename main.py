@@ -50,7 +50,7 @@ if __name__ == '__main__':
                     if str(i) == str(datetime.datetime.now().strftime('%H:%M')) + ':00':
                         numbers, indexes, names, messages = process_data.get_main_data(today_df, i)
                         print('Sending Message/s to', ', '.join(names))
-                        status_check = whatsapp.whatsapp_communicate(numbers, messages)
+                        status_check = whatsapp.whatsapp_communicate(numbers, names, messages)
                         today_df = status_update()
                         total_messages_sent += len(indexes)
                 else:
