@@ -93,5 +93,5 @@ def whatsapp_communicate(numbers, names, messages):
             return success_numbers, failed_numbers, intrnt_connected, logged_in
     else:
         failed_numbers = [(i, numbers[i], messages[i]) for i in range(len(numbers))]
-        driver.close()
+        driver.close() 
         return success_numbers, failed_numbers, intrnt_connected, logged_in

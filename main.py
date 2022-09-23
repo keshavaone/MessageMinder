@@ -52,7 +52,7 @@ if __name__ == '__main__':
                         print('Sending Message/s to', ', '.join(names))
                         status_check = whatsapp.whatsapp_communicate(numbers, names, messages)
                         today_df = status_update()
-                        total_messages_sent += len(indexes)
+                        total_messages_sent += len(indexes) 
                 else:
                     break
             except ValueError:
