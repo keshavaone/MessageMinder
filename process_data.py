@@ -16,13 +16,10 @@ NAME = 'Name'
 
 
 def load_workbook(file_location):
-    workbook = openpyxl.load_workbook(file_location)
-    assert isinstance(workbook.active, object)
-    sheet = workbook.active
-    return workbook, sheet
+    return openpyxl.load_workbook(file_location)
 
 
-def fit(file_location):
+def fit(file_location: object) -> object:
     df = whatsapp_from_excel.import_to_df(file_location, sheetName)
     df = whatsapp_from_excel.pre_process_data(df)
     df[DATE] = pd.to_datetime(df[DATE], format='%d-%m-%Y')
@@ -52,7 +49,7 @@ def check_outstanding_pings(sheet, workbook, today_df, time_out_condition, file_
     return today_df
 
 
-def re_ordering_data(today_df):
+def second_fit(today_df):
     today_df = today_df[today_df[STATUS].isna()]
     today_df = today_df.sort_values(by=[AM_PM, HOUR, MINUTE])
     today_df[TIME] = today_df[NAME].copy()

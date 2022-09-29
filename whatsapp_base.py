@@ -41,6 +41,11 @@ def check_whatsapp_logged_in(driver):
     return logged_in
 
 
+def send_message(driver, message):
+    driver.find_element(By.XPATH, message_bar).send_keys(message)
+    driver.find_element(By.XPATH, message_bar).send_keys(Keys.ENTER)
+
+
 def whatsapp_communicate(numbers, names, messages):
 
     intrnt_connected = False
@@ -65,8 +70,7 @@ def whatsapp_communicate(numbers, names, messages):
                     driver.find_element(By.XPATH, search_bar).send_keys(numbers[i]+Keys.ENTER)
                     time.sleep(1)
                     try:
-                        driver.find_element(By.XPATH, message_bar).send_keys((messages[i]))
-                        driver.find_element(By.XPATH, message_bar).send_keys(Keys.ENTER)
+                        send_message(driver, messages[i])
                         print(i+1, 'Message Sent to', numbers[i])
                         success_numbers.append((i, numbers[i], messages[i]))
                         time.sleep(2)
@@ -75,8 +79,7 @@ def whatsapp_communicate(numbers, names, messages):
                             driver.find_element(By.XPATH, search_bar).clear()
                             driver.find_element(By.XPATH, search_bar).send_keys(names[i] + Keys.ENTER)
                             time.sleep(1)
-                            driver.find_element(By.XPATH, message_bar).send_keys((messages[i]))
-                            driver.find_element(By.XPATH, message_bar).send_keys(Keys.ENTER)
+                            send_message(driver, messages[i])
                             print(i + 1, 'Message Sent to', numbers[i])
                             success_numbers.append((i, numbers[i], messages[i]))
                             time.sleep(2)
@@ -93,5 +96,5 @@ def whatsapp_communicate(numbers, names, messages):
             return success_numbers, failed_numbers, intrnt_connected, logged_in
     else:
         failed_numbers = [(i, numbers[i], messages[i]) for i in range(len(numbers))]
-        driver.close() 
+        driver.close()
         return success_numbers, failed_numbers, intrnt_connected, logged_in

@@ -27,32 +27,33 @@ def status_update() -> object:
 
 
 if __name__ == '__main__':
-    workbook, sheet = process_data.load_workbook(file_location)
+    workbook = process_data.load_workbook(file_location)
+    sheet = workbook.active
     df, today_df = process_data.fit(file_location)
     assert isinstance(today_df, object)
     time_out_condition = today_df[process_data.STATUS].isna() & (
             today_df[process_data.HOUR].le(datetime.datetime.now().hour) &
-            today_df[process_data.MINUTE].le(datetime.datetime.now().minute) | (today_df[process_data.HOUR].isna() &
-                                                                                today_df[process_data.MINUTE].isna()))
+            today_df[process_data.MINUTE].le(datetime.datetime.now().minute) |
+            (today_df[process_data.HOUR].isna() & today_df[process_data.MINUTE].isna()))
     if len(today_df[time_out_condition]) > 0:
         today_df = process_data.check_outstanding_pings(sheet, workbook, today_df, time_out_condition,
                                                         file_location)  # re verifying the timely messages are missed
         # out or not
-    today_df = process_data.re_ordering_data(today_df)  # sorting the data by AM/PM, Hour, Minute
+    today_df = process_data.second_fit(today_df)  # sorting the data by AM/PM, Hour, Minute
     while 0 < len(today_df[today_df[process_data.STATUS].isna()]):
         for i in today_df[today_df[process_data.STATUS].isna()][process_data.TIME].dt.time:
             try:
                 if max(today_df.Time.dt.time).hour >= datetime.datetime.now().hour:
                     print(
-                        "Waiting for... {0}:00 to equal {1}".format(str(datetime.datetime.now().strftime('%H:%M')),
-                                                                    str(i)), end='\r')
+                        f"Waiting for... {str(datetime.datetime.now().strftime('%H:%M'))}:00 to equal {str(i)}",
+                        end='\r')
 
                     if str(i) == str(datetime.datetime.now().strftime('%H:%M')) + ':00':
                         numbers, indexes, names, messages = process_data.get_main_data(today_df, i)
                         print('Sending Message/s to', ', '.join(names))
                         status_check = whatsapp.whatsapp_communicate(numbers, names, messages)
                         today_df = status_update()
-                        total_messages_sent += len(indexes) 
+                        total_messages_sent += len(indexes)
                 else:
                     break
             except ValueError:
