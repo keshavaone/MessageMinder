@@ -12,7 +12,7 @@ Install the required packages:
 ```
 pip install selenium pandas
 ```
-Download ChromeDriver from here [https://chromedriver.chromium.org/]and add it to your PATH, or specify its location in the script.
+Download ChromeDriver from [here](https://chromedriver.chromium.org/) and add it to your PATH, or specify its location in the script.
 
 Prepare an Excel file with the following columns:
 
