@@ -23,8 +23,9 @@ Add one row for each message to be sent.
 Set the path to the Excel file in the script.
 
 ## Run the script:
-
+```
 python main.py
+```
 
 ## Notes
 Make sure that you have the latest version of Chrome installed.
