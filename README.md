@@ -24,7 +24,7 @@ Set the path to the Excel file in the script.
 
 ## Run the script:
 
-python send_whatsapp_messages.py
+python main.py
 
 ## Notes
 Make sure that you have the latest version of Chrome installed.
