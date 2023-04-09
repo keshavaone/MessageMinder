@@ -1,4 +1,4 @@
-# WhatsApp Automation
+# MessageMinder
 A Python script that reads a list of recipients, messages, and times from an Excel file and automatically sends the messages to the specified recipients at the specified times.
 
 ## Requirements
